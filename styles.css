@@ -1,0 +1,31 @@
+.calculator {
+    display: flex;
+    flex-direction: column;
+    width: 280px;
+    height: 420px;
+    justify-content: center;
+    border: 2px solid black;
+}
+
+.display {
+    display: flex;
+    height: 70px;
+    width: 280px;
+    justify-content: end;
+}
+
+p {
+    font-size: 30px;
+}
+
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+    width: 280px;
+}
+
+button {
+    height: 70px;
+    width: 70px;
+    /* border-radius: 50%; */
+}
