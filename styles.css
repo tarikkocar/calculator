@@ -7,15 +7,21 @@
     border: 2px solid black;
 }
 
-.display {
+.display-area {
     display: flex;
+    flex-direction: column;
     height: 70px;
     width: 280px;
-    justify-content: end;
+    justify-content: space-between;
+    align-items: end;
 }
 
-p {
+.display {
     font-size: 30px;
+}
+
+.store {
+    font-size: 20px;
 }
 
 .buttons {
@@ -28,4 +34,8 @@ button {
     height: 70px;
     width: 70px;
     /* border-radius: 50%; */
+}
+
+p {
+    margin: 0;
 }
