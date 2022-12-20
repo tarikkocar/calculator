@@ -43,7 +43,7 @@ for (i=0; i < digits.length; i++) {
 function changeStore(e) {
     if (display.innerHTML.length > 0) {
         store.innerHTML = `${display.innerHTML} ${e.target.innerHTML}`;
-        memory.firstNumber = parseInt(display.innerHTML);
+        memory.firstNumber = parseFloat(display.innerHTML);
         memory.operator = e.target.id;
         display.innerHTML = "";
     }
@@ -56,7 +56,7 @@ for (i=0; i < operators.length; i++) {
 
 function calculate(e) {
     if (display.innerHTML.length > 0 && store.innerHTML.length > 0) {
-        memory.secondNumber = parseInt(display.innerHTML);
+        memory.secondNumber = parseFloat(display.innerHTML);
         store.innerHTML += ` ${display.innerHTML}`;
         display.innerHTML = operate(memory.firstNumber, memory.secondNumber, operatorObject[memory.operator])
     }
@@ -73,5 +73,19 @@ document.querySelector(".clear").addEventListener("click", () => {
 });
 
 document.querySelector(".delete").addEventListener("click", () => {
-    display.innerHTML = display.innerHTML.slice(0, -1);
-})
+    if (display.innerHTML === "NaN") {
+        display.innerHTML = "";
+    } else {
+        display.innerHTML = display.innerHTML.slice(0, -1);
+    }
+});
+
+document.querySelector(".decimal").addEventListener("click", () => {
+    if (!display.innerHTML.includes(".")) {
+        display.innerHTML += ".";
+    }
+});
+
+document.querySelector(".sign").addEventListener("click", () => {
+    display.innerHTML = -parseFloat(display.innerHTML);
+});
