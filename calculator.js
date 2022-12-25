@@ -22,14 +22,14 @@ function operate(a, b, f) {
     return f(a, b);
 }
 
-const operatorObject = {"+": add, "-": subtract, "x": multiply, "÷": divide, "^": power};
+const operatorObject = {"+": add, "-": subtract, "x": multiply, "*": multiply, "÷": divide, "/": divide, "^": power};
 let memory = {firstNumber: Infinity, secondNumber: Infinity, operator: ""};
 
 const display = document.querySelector(".display");
 const store = document.querySelector(".store");
 
 function changeDisplay(e) {
-    let newNumber = parseInt(e.target.innerHTML);
+    let newNumber = (e.type === "click") ? parseInt(e.target.innerHTML) : parseInt(e.key);
     if (display.innerHTML.length < 12) {
         if (memory.operator !== "=" && display.innerHTML !== "0") {
             display.innerHTML += newNumber;
@@ -42,25 +42,24 @@ function changeDisplay(e) {
 }
 
 function calculate(e) {
+    let operation = (e.type === "click") ? e.target.id : e.key;
     if (display.innerHTML.length > 0 && display.innerHTML !== ".") {
         if (store.innerHTML.length === 0 || memory.operator === "=") {
-            store.innerHTML = `${display.innerHTML} ${e.target.id}`;
+            store.innerHTML = `${display.innerHTML} ${operation}`;
             memory.firstNumber = parseFloat(display.innerHTML);
-            memory.operator = e.target.id;
+            memory.operator = operation;
             display.innerHTML = "";
-            console.log(memory);
         } else {
             memory.secondNumber = parseFloat(display.innerHTML);
             let calculation = Math.round(operate(memory.firstNumber, memory.secondNumber, operatorObject[memory.operator]) * 100) / 100;
             if (String(calculation).length > 11) {
-                store.innerHTML = `${calculation.toExponential(2)} ${e.target.id}`;    
+                store.innerHTML = `${calculation.toExponential(2)} ${operation}`;
             } else {
-                store.innerHTML = `${calculation} ${e.target.id}`;
+                store.innerHTML = `${calculation} ${operation}`;
             }
             memory.firstNumber = calculation;
-            memory.operator = e.target.id;
+            memory.operator = operation;
             display.innerHTML = "";
-            console.log(memory);
         }
     }
 }
@@ -75,8 +74,16 @@ function ifEqualized(e) {
         } else {
             display.innerHTML = calculation;
         }
-        memory.operator = e.target.id;
-        console.log(memory)
+        memory.operator = (e.type === "click") ? e.target.id : e.key;
+    }
+}
+
+function deleteNumber(e) {
+    if (display.innerHTML === "NaN" || display.innerHTML === "Infinity" || display.innerHTML === "-Infinity" || display.innerHTML.includes("e") || memory.operator === "=") {
+        store.innerHTML = "";
+        display.innerHTML = "";
+    } else {
+        display.innerHTML = display.innerHTML.slice(0, -1);
     }
 }
 
@@ -100,14 +107,7 @@ document.querySelector(".clear").addEventListener("click", () => {
     display.innerHTML = "";
 });
 
-document.querySelector(".delete").addEventListener("click", () => {
-    if (display.innerHTML === "NaN" || display.innerHTML === "Infinity" || display.innerHTML === "-Infinity" || display.innerHTML.includes("e") || memory.operator === "=") {
-        store.innerHTML = "";
-        display.innerHTML = "";
-    } else {
-        display.innerHTML = display.innerHTML.slice(0, -1);
-    }
-});
+document.querySelector(".delete").addEventListener("click", deleteNumber);
 
 document.querySelector(".decimal").addEventListener("click", () => {
     if (!display.innerHTML.includes(".")) {
@@ -118,5 +118,21 @@ document.querySelector(".decimal").addEventListener("click", () => {
 document.querySelector(".sign").addEventListener("click", () => {
     if (!isNaN(parseFloat(display.innerHTML))) {
         display.innerHTML = -parseFloat(display.innerHTML);
+    }
+});
+
+document.addEventListener("keydown", (e) => {
+    if (isFinite(e.key)) {
+        changeDisplay(e);
+    } else if (e.key === "+" || e.key === "-" || e.key === "*" || e.key === "/") {
+        calculate(e);
+    } else if (e.key === "=") {
+        ifEqualized(e);
+    } else if (e.key === "Backspace") {
+        deleteNumber();
+    } else if (e.key === ".") {
+        if (!display.innerHTML.includes(".")) {
+            display.innerHTML += ".";
+        }
     }
 });
